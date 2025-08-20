@@ -17,9 +17,10 @@ public class UserService {
 	}
 	
 	//로그인 성공 시 데이터 반환
-	public boolean validdateUser(String userId, String password){
+	public boolean validateUser(String userId, String password){
 		User user = userMap.get(userId);
-		if(user!=null && user.getPassword().equals(password)) { return true; }
-		return false;
+		return user != null && user.getPassword().equals(password);
 	}
+
+	public User getUser(String userId){return userMap.get(userId);}
 }
