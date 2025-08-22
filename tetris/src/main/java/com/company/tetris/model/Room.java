@@ -16,8 +16,8 @@ public class Room {
 	public boolean isFull() { return participants.size() >= maxCapacity; }
 	
 	//유저가 모두 준비 상태인가?
-	public boolean allReady() {return readyStatus.values().stream().allMatch();}
+	//public boolean allReady() {return readyStatus.values().stream().allMatch();}
 	
 	//해당 유저가 방장인가?
-	public boolean isHost(String userId) {}
+	//public boolean isHost(String userId) {}
 }
