@@ -27,6 +27,16 @@ public class Board {
 			gameBoard[y][x] = true;
 		}
 	}
+	
+	public boolean gameOverLineCheck(int row) {   //GameBoard해당 라인에 블럭이 하나라도 쌓이면 true
+        for (int col = 0; col < GAME_BOARD_WIDTH; col++) {
+            if (gameBoard[row][col]) {
+                return true; // 해당 줄에 블록이 하나라도 있으면 true 반환
+            }
+        }
+        return false; // 줄에 블록이 없으면 false 반환
+    }
+	
 	public int lineClear() {
 		int clearLineCount = 0;
 		for(int row = GAME_BOARD_HEIGHT-1; row>=0; row--) {

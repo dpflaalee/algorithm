@@ -7,13 +7,14 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 @Configuration @EnableWebSocketMessageBroker
-public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{ 
 	
 	// 메세지 브로커 설정
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
 		config.setApplicationDestinationPrefixes("/app");
-		//애플리케이션에서 처리할 메시지의 접두사. 클라이언트가 이 접두사를 사용하여 메시지를 보내면 해당 메시지는 애플리케이션의 @MessageMapping이나 @SubscribeMapping으로 매핑된 메서드로 라우팅	
+		//애플리케이션에서 처리할 메시지의 접두사. 
+		//클라이언트가 이 접두사를 사용하여 메시지를 보내면 해당 메시지는 애플리케이션의 @MessageMapping이나 @SubscribeMapping으로 매핑된 메서드로 라우팅	
 	}
 	
 	//클라이언트가 웹소켓 서버에 연결할 수 있는 엔드포인트 등록

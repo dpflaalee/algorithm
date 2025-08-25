@@ -24,7 +24,7 @@ public class Block {
 		this.shape = shapes[currentRotation]; //모양 업데이트
 	}
 	// 2. 블록 회전 - 반시계방향
-	public void reversRotation() {
+	public void reverseRotation() {
 		currentRotation = (currentRotation-1 + shapes.length) % shapes.length; // 다음 회전 상태
 		this.shape = shapes[currentRotation]; // 모양 업데이트
 	}
