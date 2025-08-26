@@ -45,4 +45,16 @@ public class TetrisController {
     public void spawn() {
         tetrisService.spawn();
     }
+    
+    @ResponseBody
+    @PostMapping("/pause")
+    public void pause() {tetrisService.pause();}
+    
+    @ResponseBody
+    @PostMapping("/resume")
+    public void resume() {tetrisService.resume();}
+    
+    @ResponseBody
+    @PostMapping("/restart")
+    public void restart() {tetrisService.restart();}
 }

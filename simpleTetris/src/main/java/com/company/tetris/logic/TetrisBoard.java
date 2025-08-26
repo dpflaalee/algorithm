@@ -8,21 +8,30 @@ public class TetrisBoard {
 	private Tetromino current;
 	
 	//블록 생성
-	public void spawn(Tetromino t) {current = t;}
+	public void spawn(Tetromino t) {
+		t.setPosition(new Point(4,0));
+		if(canMove(t)) {
+			current = t;
+		}else {System.out.println("GAME OVER"); current=null;}
+	}
 	//이동 가능한가요?
 	public boolean canMove(Tetromino t) {
 		for(Point p : t.getAbsoluteBlocks()) {
-			if(p.x<0 || p.x>=width || p.y<0 || p.y>=height) return false;
-			if(board[p.y][p.x] !=0) return false;
+			if(p.x < 0 || p.x >= width || p.y >= height) return false;
+	        if(p.y >= 0 && board[p.y][p.x] != 0) return false;
 		}
 		return true;
 	}
 	//블록 고정
 	public void fixTetromino() {
-		for(Point p : current.getAbsoluteBlocks()) {board[p.y][p.x] = 1;}
+		for(Point p : current.getAbsoluteBlocks()) {
+			if(p.y >= 0 && p.y < height && p.x >= 0 && p.x < width) {
+				board[p.y][p.x] = 1;
+			}
+		}
 	}
 	//줄 삭제
-	public int claerLines() {
+	public int clearLines() {
 		int linesCleared = 0;
 		for(int y=0; y<height; y++) {
 			boolean full = true;
