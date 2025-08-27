@@ -14,6 +14,19 @@ public class TetrisBoard {
 			current = t;
 		}else {System.out.println("GAME OVER"); current=null;}
 	}
+	
+	//고스트 블록
+	public Point[] getGhostBlocks() {
+		Tetromino current = getCurrent();
+		if(current == null) return new Point[0];
+		
+		Tetromino ghost = current.copy();		
+		while (canMove(ghost)) {ghost.move(0, 1);}
+		ghost.move(0, -1); //이동 불가 시 마지막 유효 위치로 롤백
+		
+		return ghost.getAbsoluteBlocks();
+	}
+	
 	//이동 가능한가요?
 	public boolean canMove(Tetromino t) {
 		for(Point p : t.getAbsoluteBlocks()) {
@@ -46,6 +59,7 @@ public class TetrisBoard {
 		}
 		return linesCleared;
 	}
+	
 	//현재 블록 반환
 	public Tetromino getCurrent() {return current;}
 	//게임판 상태 반환

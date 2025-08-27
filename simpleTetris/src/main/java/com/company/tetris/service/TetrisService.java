@@ -82,7 +82,15 @@ public class TetrisService {
 	public GameState getCurrentState() {
 		Tetromino current = board.getCurrent();
 		Point[]blocks = current != null ? current.getAbsoluteBlocks() : new Point[0];
-		return new GameState(board.getBoard(), blocks, scoreManager.getScore(), isGameOver, isPaused);
+		Point[]ghost = board.getGhostBlocks();
+		
+		TetrominoType nextType = generator.peekNextType();
+		Tetromino preview = new Tetromino(nextType);
+		Point[] nextBlocks = preview.getAbsoluteBlocks();
+		String nextColor = nextType.getColor();
+		
+		return new GameState(board.getBoard(), blocks, scoreManager.getScore(), isGameOver, isPaused, current, 
+				ghost, nextType, nextBlocks, nextColor);
 	}
 	
 	public int getScore() {return scoreManager.getScore();}

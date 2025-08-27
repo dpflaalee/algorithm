@@ -4,10 +4,10 @@ document.addEventListener("DOMContentLoaded", ()=>{
     const pauseResumeBtn = document.getElementById("pauseResumeBtn");
     const startRestartBtn = document.getElementById("startRestartBtn");
     
-    function draw(grid, currentBlocks){
+    function draw(grid, currentBlocks, ghostBlocks, color){
         if(!grid || !grid.length) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+        //고정 블록
         for(let y=0; y<grid.length; y++){
             for(let x=0; x<grid[0].length; x++){
                 if(grid[y][x] === 1){
@@ -16,17 +16,37 @@ document.addEventListener("DOMContentLoaded", ()=>{
                 }
             }
         }
+        //고스트 블록
+        if(ghostBlocks){
+            ghostBlocks.forEach(p=>{
+                ctx.fillStyle = "rgba(200,200,200,0.3)";
+                ctx.fillRect(p.x*30, p.y*30, 30, 30);
+            });
+        }
+        //현재 블록
         if(currentBlocks){
             currentBlocks.forEach(p=>{
-                ctx.fillStyle="red"; 
+                ctx.fillStyle=color || "red";
                 ctx.fillRect(p.x*30, p.y*30, 30, 30);});
         }
+    }
+    //미리보기 블록
+    function drawPreview(nextBlocks, nextColor){
+        const canvas = document.getElementById("previewCanvas");
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0,0, canvas.width, canvas.height);
+
+        ctx.fillStyle = nextColor;
+        nextBlocks.forEach(p=>{
+            ctx.fillRect((p.x-2.5)*20, (p.y+1.5)*20, 20, 20);
+        });
     }
     function update(){
         fetch("/tetris/state")
             .then(res => res.json())
             .then(data=>{
-                draw(data.board, data.current);
+                draw(data.board, data.current, data.ghost, data.color);
+                drawPreview(data.nextBlocks, data.nextColor);
                 document.getElementById("score").innerText = data.score;
 
                 // GAME OVER 
@@ -78,7 +98,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
                 if(e.key === "ArrowRight") direction = "right";
                 if(e.key === "ArrowDown") direction = "down";
                 if(e.key === "ArrowUp") direction = "rotate";
-                if(e.key === ""){
+                if(e.key === " "){
                     fetch("/tetris/drop", {method: "POST"}).then(update); return;
                 }
                 if(direction){fetch("/tetris/move?direction="+direction, {method:"POST"}).then(update);}

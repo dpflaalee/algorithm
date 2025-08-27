@@ -1,10 +1,6 @@
 package com.company.tetris.logic;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 //랜덤 생성
 public class TetrominoGenerator {
@@ -16,20 +12,27 @@ public class TetrominoGenerator {
 //		return new Tetromino(type);
 //	}
 	
-	private List<Character> bag = new ArrayList<>();
-	private Random random = new Random();
+	private static final List<TetrominoType> ALL_TYPES = Arrays.asList(TetrominoType.values());
+	private final Queue<TetrominoType> bag = new LinkedList<>();
+	private final Random random = new Random();
 	
 	public Tetromino next() {
 		if(bag.isEmpty()) refillBag();
-		char type = bag.remove(0);
-		return new Tetromino(type);
+		return new Tetromino(bag.poll());
+	}
+	private void refillBag() {
+		List<TetrominoType> shuffled = new ArrayList<>(ALL_TYPES);
+		Collections.shuffle(shuffled, random);
+		bag.addAll(shuffled);
 	}
 	
-	private void refillBag() {
-//		bag = Arrays.asList('I', 'O', 'T', 'S', 'Z', 'J', 'L');
-//		Collections.shuffle(bag, random);
-	    List<Character> types = Arrays.asList('I', 'O', 'T', 'S', 'Z', 'J', 'L');
-	    bag = new ArrayList<>(types); 
-	    Collections.shuffle(bag, random);
+	//미리보기
+	public TetrominoType peekNextType() {
+		if(bag.isEmpty()) refillBag();
+		return bag.peek();
+	}
+	
+	public List<TetrominoType> getUpcomingTypes(){
+		return new ArrayList<>(bag);
 	}
 }
