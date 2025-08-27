@@ -16,6 +16,9 @@ import com.company.tetris.service.TetrisService;
 public class TetrisController {
 	@Autowired private TetrisService tetrisService;
 	
+	@RequestMapping("/") @ResponseBody
+	public String basic() {return "/";}
+	
 	@GetMapping
 	public String gamaPage(Model model) {
 		model.addAttribute("score", tetrisService.getScore());
@@ -24,27 +27,19 @@ public class TetrisController {
 	
 	@ResponseBody
     @GetMapping("/state")
-    public GameState getState() {
-        return tetrisService.getCurrentState();
-    }
+    public GameState getState() { return tetrisService.getCurrentState(); }
 
     @ResponseBody
     @PostMapping("/move")
-    public void move(@RequestParam String direction) {
-        tetrisService.move(direction);
-    }
+    public void move(@RequestParam String direction) { tetrisService.move(direction); }
 
     @ResponseBody
     @PostMapping("/drop")
-    public void drop() {
-        tetrisService.drop();
-    }
+    public void drop() { tetrisService.drop(); }
 
     @ResponseBody
     @PostMapping("/spawn")
-    public void spawn() {
-        tetrisService.spawn();
-    }
+    public void spawn() { tetrisService.spawn(); }
     
     @ResponseBody
     @PostMapping("/pause")
