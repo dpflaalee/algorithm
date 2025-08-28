@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
         });
     }
     function update(){
-        fetch("/tetris/state")
+        fetch("/game/state")
             .then(res => res.json())
             .then(data=>{
                 draw(data.board, data.current, data.ghost, data.color);
@@ -68,27 +68,27 @@ document.addEventListener("DOMContentLoaded", ()=>{
     
     //일시정지-재개
     pauseResumeBtn.addEventListener("click",()=>{
-        fetch("/tetris/state")
+        fetch("/game/state")
             .then(res=>res.json())
             .then(data=>{
-                const url = data.paused ? "/tetris/resume" : "/tetris/pause";
+                const url = data.paused ? "/game/resume" : "/game/pause";
                 fetch(url, {method:"POST"}).then(()=>{update();});
             });
     });
 
     //시작-재시작
     startRestartBtn.addEventListener("click", ()=>{
-        fetch("/tetris/state")
+        fetch("/game/state")
             .then(res=>res.json())
             .then(data=>{
-                const url = data.paused ? "/tetris/spawn" : "/tetris/restart";
+                const url = data.paused ? "/game/spawn" : "/game/restart";
                 fetch(url, {method:"POST"}).then(update);
             });
     });
 
     //키 조작
     document.addEventListener("keydown", e =>{
-        fetch("/tetris/state")
+        fetch("/game/state")
             .then(res=>res.json())
             .then(data=>{
                 if(data.paused || data.gameOver) return;
@@ -99,19 +99,19 @@ document.addEventListener("DOMContentLoaded", ()=>{
                 if(e.key === "ArrowDown") direction = "down";
                 if(e.key === "ArrowUp") direction = "rotate";
                 if(e.key === " "){
-                    fetch("/tetris/drop", {method: "POST"}).then(update); return;
+                    fetch("/game/drop", {method: "POST"}).then(update); return;
                 }
-                if(direction){fetch("/tetris/move?direction="+direction, {method:"POST"}).then(update);}
+                if(direction){fetch("/game/move?direction="+direction, {method:"POST"}).then(update);}
             });
     });
     
     //자동 낙하
     setInterval(()=>{
-        fetch("/tetris/state")
+        fetch("/game/state")
             .then(res=>res.json())
             .then(data=>{
                 if(!data.paused && !data.gameOver){
-                    fetch("/tetris/move?direction=down", {method:"POST"});
+                    fetch("/game/move?direction=down", {method:"POST"});
                 }
                 update();
             });

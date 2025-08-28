@@ -1,5 +1,7 @@
 package com.company.tetris.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,19 +12,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.company.tetris.logic.GameState;
+import com.company.tetris.model.User;
 import com.company.tetris.service.TetrisService;
 
-@Controller @RequestMapping("/tetris")
+@Controller @RequestMapping("game")
 public class TetrisController {
 	@Autowired private TetrisService tetrisService;
 	
 	@RequestMapping("/") @ResponseBody
 	public String basic() {return "/";}
 	
-	@GetMapping
-	public String gamaPage(Model model) {
+	@GetMapping("/home")
+	public String gamaPage(Model model, HttpSession session) {
+		User user = (User) session.getAttribute("loginUser");
+        if (user == null) { return "redirect:/user/login"; }
+		
 		model.addAttribute("score", tetrisService.getScore());
-		return "game";
+		return "game/single";
 	}
 	
 	@ResponseBody
