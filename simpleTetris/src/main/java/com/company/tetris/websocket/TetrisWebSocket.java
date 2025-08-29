@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
-import com.company.tetris.logic.GameState;
+import com.company.tetris.dto.GameState;
 import com.company.tetris.service.TetrisService;
 
 

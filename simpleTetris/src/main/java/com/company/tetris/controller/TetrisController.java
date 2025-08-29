@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.company.tetris.logic.GameState;
+import com.company.tetris.dto.GameState;
 import com.company.tetris.model.User;
 import com.company.tetris.service.TetrisService;
 

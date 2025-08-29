@@ -11,6 +11,7 @@ import com.company.tetris.model.User;
 @Service
 public class RoomService {
 	private final Map<String, Room> roomMap = new ConcurrentHashMap<>();
+	private final Map<String, String> userRoomMap = new ConcurrentHashMap<>();
 	
 	//방 만들기
 	public String createRoom(String hostId, int maxPlayers) {
@@ -27,9 +28,17 @@ public class RoomService {
 	
 	//방 참여
 	public boolean joinRoom(String roomId, User user) {
+		//한 유저가 여러 방 입장하는 걸 방지
+		String currentRoomId = userRoomMap.get(user.getUserId());
+		if(currentRoomId != null && !currentRoomId.equals(roomId)) {leaveRoom(currentRoomId, user.getUserId());}
+		
 		Room room = roomMap.get(roomId);
 		if(room==null || room.isFull()) return false;
-		return room.addUser(user.getUserId());
+		
+		boolean joined = room.addUser(user);
+		if(joined) userRoomMap.put(user.getUserId(), roomId);
+		
+		return room.addUser(user);
 	}
 	
 	//준비 상태
@@ -44,7 +53,7 @@ public class RoomService {
 		return true;
 	}
 	
-	//모두 준비됐나?
+	//전체 준비상태 확인
 	public boolean canStartGame(String roomId, String userId) {
 		Room room = roomMap.get(roomId);
 		if(room == null) return false;
@@ -53,6 +62,17 @@ public class RoomService {
 	
 	//방 삭제
 	public void removeRoom(String roomId) {roomMap.remove(roomId);}
+	
+	//나가기
+	public void leaveRoom(String roomId, String userId) {
+		Room room = roomMap.get(roomId);
+		if(room != null) {
+			room.removeUser(userId);
+			if(room.getParticipants().isEmpty()){
+				removeRoom(roomId);
+			}
+		}
+	}
 	
 	
 }

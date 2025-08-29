@@ -2,6 +2,7 @@ package com.company.tetris.service;
 
 import org.springframework.stereotype.Service;
 
+import com.company.tetris.dto.GameState;
 import com.company.tetris.logic.*;
 
 @Service

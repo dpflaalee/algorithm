@@ -1,4 +1,8 @@
-package com.company.tetris.logic;
+package com.company.tetris.dto;
+
+import com.company.tetris.logic.Point;
+import com.company.tetris.logic.Tetromino;
+import com.company.tetris.logic.TetrominoType;
 
 //DTO
 public class GameState {

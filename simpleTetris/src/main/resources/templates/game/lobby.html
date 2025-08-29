@@ -1,10 +1,100 @@
 <!DOCTYPE html>
-<html>
+<html  lang="ko"     xmlns:th="http://www.thymeleaf.org"  
+                   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+                   layout:decorate="~{fragments/layout}">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>대기실</title>
 </head>
 <body>
+
+<div layout:fragment="content">
+	<h2>대기실</h2>
+	<div>
+		<!-- <input type="text" id="rommName" placeholder="방 이름"> -->
+		<input type="number" id="maxPlayers" placeholder="최대 인원" min="2" max="4">
+		<button onclick="createRoom()">방 생성</button>
+	</div>
+	
+	<!-- 리스트 -->
+	<div id="roomList">
+		<h3>참여 가능한 방</h3>
+		<ul id="rooms"></ul>
+	</div>
+	
+	<!-- 준비 상태 -->
+	<div id="roomStatus" style="display: none;">
+		<h3>방 참여 중: <span id="currentRoomId"></span></h3>
+		<button onclick="sendReady()">준비 완료</button>
+		<button onclick="startGame()">게임 시작</button>
+		<ul id = "players"></ul>
+	</div>
+	
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////// -->	
+	
+	<script th:inline="javascript">
+		let stompClient;
+		let userId = /*[[${session.userId}]]*/ 'guest';
+		let roomId = null;
+		
+		function connectWebSocket(){
+			const socket = new SockJS('/ws');
+			stompClient = Stomp.over(socket);
+			stompClient.connetct({},()=>{
+				stompClient.subscribe('/topic/romms', updateRoomList);
+				stompClient.subscribe(`/topic/room/${userId}`, updateRoomStatus);
+                stompClient.send("/app/room/list", {}, {});
+			});
+		}
+		
+		function createRoom(){
+			const name = document.getElementById("roomName").value;
+            const max = document.getElementById("maxPlayers").value;
+            stompClient.send("/app/room/create", {}, JSON.stringify({ hostId: userId, roomName: name, maxPlayers: max }));
+		}
+		
+		function joinRoom(id) {
+            roomId = id;
+            stompClient.send("/app/room/join", {}, JSON.stringify({ roomId: id, userId }));
+            document.getElementById("currentRoomId").innerText = id;
+            document.getElementById("roomStatus").style.display = "block";
+        }
+
+        function sendReady() {
+            stompClient.send("/app/room/ready", {}, JSON.stringify({ roomId, userId }));
+        }
+
+        function startGame() {
+            stompClient.send("/app/room/start", {}, JSON.stringify({ roomId, userId }));
+        }
+
+        function updateRoomList(message) {
+            const rooms = JSON.parse(message.body);
+            const list = document.getElementById("rooms");
+            list.innerHTML = "";
+            rooms.forEach(room => {
+                const li = document.createElement("li");
+                li.innerHTML = `${room.roomName} (${room.players.length}/${room.maxPlayers}) 
+                    <button onclick="joinRoom('${room.roomId}')">참여</button>`;
+                list.appendChild(li);
+            });
+        }
+
+        function updateRoomStatus(message) {
+            const status = JSON.parse(message.body);
+            const list = document.getElementById("players");
+            list.innerHTML = "";
+            status.players.forEach(p => {
+                const li = document.createElement("li");
+                li.innerText = `${p.userId} - ${p.ready ? "준비 완료" : "대기 중"}`;
+                list.appendChild(li);
+            });
+        }
+
+        connectWebSocket();
+	</script>
+
+</div>
 
 </body>
 </html>
